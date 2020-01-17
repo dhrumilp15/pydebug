@@ -1,2 +1,2 @@
-from code import code
-from debug import debug
+import code
+from debug import debugger

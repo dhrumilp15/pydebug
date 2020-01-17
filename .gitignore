@@ -1,0 +1,7 @@
+.ionide/
+.vscode/
+__pycache__/
+.pytest_cache/
+
+*.pyc
+output.log
