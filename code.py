@@ -1,19 +1,15 @@
 #!/usr/bin/env python3    
 def testfunc():
-    sample = 1
+    var = 18
 
-    sample = 5
+    var += 37
 
-    sample = 7
+    sample = "Wow sample time!"
 
-    sample += 13
+    sample += "zucc"
 
-    sample = ['seven']
+    sample += "hinis"
 
-    sickoMode = ["bing", "bong"]
+    yellow = ["Mellow"]
 
-    sickoMode += ["bing", "bong", "sicko"]
-
-    sickoMode.append("sickoMode")
-
-    sickoMode = ["slippy"]
+    yellow = ["Mellow", "Yellows"]
