@@ -3,13 +3,13 @@ import os
 from inspect import *
 
 def on_var_change(lineno : int, varname : str, outfile : str, old, new):
-    print(f"On line {lineno}: {varname} changes from {old} to {new}")
+    print(f"On line \'{lineno}\'': {varname} changes from {old} to {new}")
     # For easier testing
     with open(outfile, "a") as f:
         f.write(f"{lineno} - {varname} : {old} -> {new}\n")
 
 def on_var_init(lineno : int, varname : str, outfile : str, varvalue : str):
-    print(f"On line {lineno}: {varname} is initialized to {varvalue}")
+    print(f"On line \'{lineno}\': {varname} is initialized to {varvalue}")
     # For easier testing
     with open(outfile, "a") as f:
         f.write(f"{lineno} - {varname} : {varvalue}\n")
