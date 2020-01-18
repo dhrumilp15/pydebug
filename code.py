@@ -10,14 +10,18 @@ def testfunc():
 
     sample += "hinis"
 
-    yellow = ["Mellow"]
+    sample = 3
 
-    yellow = ["Mellow", "Yellows"]
+    # yellow = ["Mellow"]
 
-    big = {'wow' : 'nop'}
+    # yellow = ["Mellow", "Yellows"]
 
-    big = {'wow' : 'nop', "good" : "day"}
+    # big = {'wow' : 'nop'}
 
-    sicko = ("biggo", "slurp")
+    # big = {'wow' : 'nop', "good" : "day"}
 
-    sicko = ("biggo", "slup", "mode")
+    # big = {'wow' : 'sicko', "good" : "day"}
+
+    # sicko = ("biggo", "slurp")
+
+    # sicko = ("biggo", "slup", "mode")
