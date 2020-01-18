@@ -1,6 +1,9 @@
 .ionide/
+.ionide
 .vscode/
+.vscode
 .pytest_cache/
+.pytest_cache
 
 __pycache__/
 __pycache__
