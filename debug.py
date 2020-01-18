@@ -28,7 +28,7 @@ class debugger:
 
         self.record = defaultdict(list)
         
-        self.outfile = "output.log"
+        self.outfile = "report.log"
         self.main(test_function)
     
     def main(self, test_function: FunctionType):
@@ -98,41 +98,33 @@ class debugger:
     
     def closing(self):
         print("\n----------------Finished Debug----------------")
-        print("See your results in output.log!")
+        print("See the execution history and the report in the report.log!")
     
     def print_record(self):
-        print("\n----------------Record----------------")
-        # print(self.record)
-        for varname, info in self.record.items():
-            print(f"\nFor the variable \'{varname}\'")
-            init = info[0]
+        with open(self.outfile, "a") as f:
+            for varname, info in self.record.items():
+                f.write(f"\nFor the variable \'{varname}\'\n")
+                init = info[0]
 
-            initialType = type(init[2])
-            print(f"\tType: {initialType.__name__}")
-            print(f"\tInstantiated in function \'{init[0]}\' on line {init[1]}")
-            values = []
-            
-            if initialType is str:
-                print("\tValues:")
-            for detail in info:
-                # print(initialType)
-                if not type(detail[2]) == initialType:
-                    print(f"\tOn line {detail[1]} in function \'{detail[0]}\': Change in type from {initialType.__name__} to {type(detail[2]).__name__}")
-                    print(f"\n\tCurrent Type: {type(detail[2]).__name__}")
-                    values.clear()
-                initialType = type(detail[2])
-                values.append(detail[2])
-                if initialType is str:
-                    print(f"\t - On line {detail[1]} in function \'{detail[0]}\', {detail[2]}")
-            if initialType is int:
-                print(f"\t - Min: {min(values)}, Max: {max(values)}")
-
+                initialType = type(init[2])
+                f.write(f"\tType: {initialType.__name__}\n")
+                f.write(f"\tInstantiated in function \'{init[0]}\' on line {init[1]}\n")
+                values = []
                 
-
-
-            
-
-    
+                if initialType is Sequence:
+                    f.write("\tValues:\n")
+                for detail in info:
+                    # print(initialType)
+                    if not type(detail[2]) == initialType:
+                        f.write(f"\tOn line {detail[1]} in function \'{detail[0]}\': Change in type from {initialType.__name__} to {type(detail[2]).__name__}\n")
+                        f.write(f"\n\tCurrent Type: {type(detail[2]).__name__}\n")
+                        values.clear()
+                    initialType = type(detail[2])
+                    values.append(detail[2])
+                    if initialType is str:
+                        f.write(f"\t - On line {detail[1]} in function \'{detail[0]}\', {detail[2]}\n")
+                if initialType is int:
+                    f.write(f"\t - Min: {min(values)}, Max: {max(values)}\n")
 
 # If this file is called directly from the commandline
 if __name__ == "__main__":
