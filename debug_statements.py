@@ -2,11 +2,10 @@
 import os
 from inspect import *
 
-def print_var_change(lineno : int, varname : str, old : list, new : list, changekeys : dict = None):    
+def print_var_change(varname : str, old : list, new : list, changekeys : dict = None):    
     changetypes = list, dict
 
     if isinstance(old, changetypes) and isinstance(new, changetypes):
-        print(f"On line {lineno}:")
         if old and new: # If there are objects in old that aren't in new and there are objects in new that aren't in old
             if isinstance(old,dict) and isinstance(new,dict):
                 for key in changekeys:
@@ -22,10 +21,10 @@ def print_var_change(lineno : int, varname : str, old : list, new : list, change
         elif new:
             print(f"\t{new} is added to \'{varname}\'")
     else:
-        print(f"On line {lineno}: \'{varname}\' changes from {old} to {new}")
+        print(f"\t\'{varname}\' changes from {old} to {new}")
     
-def print_var_init(lineno : int, varname : str, varvalue : str):
-    print(f"On line {lineno}: \'{varname}\' is initialized to {varvalue}")
+def print_var_init(varname : str, varvalue : str):
+    print(f"\t\'{varname}\' is initialized to {varvalue}")
     
 def call_print(frame):
     frameinfo = getframeinfo(frame)
