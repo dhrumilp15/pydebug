@@ -1,5 +1,5 @@
 #!/usr/bin/env python3    
-def main():
+def sicko():
     var = 18
 
     var += 37

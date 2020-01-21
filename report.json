@@ -1,16 +1,16 @@
 {
     "header": {
         "File": "code.py",
-        "Function": "main",
+        "Function": "sicko",
         "Initial Line": 2,
-        "start_time": 1579571216.7291718
+        "start_time": 1579573412.4896991
     },
     "body": {
         "1": [
             {
                 "name": "var",
-                "timestamp": 1579571216.7891567,
-                "function": "main",
+                "timestamp": 1579573412.5677037,
+                "function": "sicko",
                 "lineno": 3,
                 "value": 18
             }
@@ -18,8 +18,8 @@
         "2": [
             {
                 "name": "var",
-                "timestamp": 1579571216.89269,
-                "function": "main",
+                "timestamp": 1579573412.5696921,
+                "function": "sicko",
                 "lineno": 5,
                 "value": 55
             }
@@ -27,8 +27,8 @@
         "3": [
             {
                 "name": "sample",
-                "timestamp": 1579571216.9387038,
-                "function": "main",
+                "timestamp": 1579573412.5706947,
+                "function": "sicko",
                 "lineno": 7,
                 "value": "Wow sample time!"
             }
@@ -36,8 +36,8 @@
         "4": [
             {
                 "name": "sample",
-                "timestamp": 1579571217.0427582,
-                "function": "main",
+                "timestamp": 1579573412.705697,
+                "function": "sicko",
                 "lineno": 9,
                 "value": "Wow sample time!zucc"
             }
@@ -45,8 +45,8 @@
         "5": [
             {
                 "name": "sample",
-                "timestamp": 1579571217.045736,
-                "function": "main",
+                "timestamp": 1579573412.711697,
+                "function": "sicko",
                 "lineno": 11,
                 "value": "Wow sample time!zucchinis"
             }
@@ -54,15 +54,15 @@
         "6": [
             {
                 "name": "var",
-                "timestamp": 1579571217.0474415,
-                "function": "main",
+                "timestamp": 1579573412.7146988,
+                "function": "sicko",
                 "lineno": 13,
                 "value": 100
             },
             {
                 "name": "sample",
-                "timestamp": 1579571217.0474415,
-                "function": "main",
+                "timestamp": 1579573412.7156947,
+                "function": "sicko",
                 "lineno": 13,
                 "value": 3
             }

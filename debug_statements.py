@@ -37,7 +37,7 @@ def call_print(frame):
 def helper():
     print('''
         -----------------------------------------
-        Welcome to Dhrumil's Epic Python Debugger!
+        Welcome to an Epic Python Debugger!
 
         Usage:
             
