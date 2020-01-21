@@ -9,6 +9,8 @@ from collections import defaultdict
 from types import *
 from collections.abc import *
 from time import time
+import importlib.util
+from jsonhandler import *
 
 
 class Debugger:
@@ -16,39 +18,54 @@ class Debugger:
     Main Debugger Class, drives debugging and traces calls and lines
     """
     
-    def __init__(self, test_function: FunctionType):
+    def __init__(self, test_function: FunctionType = None, json_report = None):
         """
         Debugger constructor
         :param test_function: FunctionType, This is the function to debug
         """
         # self.number = 0
-        
-        self.vars = defaultdict()
-        self.empty = True
-
-        self.lineno = None
-        self.function_name = test_function.__name__
-        self.startline = 0
-        
         self.start_time = time()
+        self.vars = defaultdict()
         self.line_times = []
+        self.json_report = json_report
 
-        self.record = defaultdict(list)
-        
-        self.outfile = "report.log"
-        self.main(test_function)
+        if json_report:
+            self.record = load_json(json_report)
+            self.print_record()
+        else:
+
+            self.lineno = None
+            self.function_name = test_function.__name__
+            self.startline = 0
+            
+            self.step = 0
+
+            self.record = defaultdict(list)
+            
+            self.outfile = "report.json"
+            self.main(test_function)
+
 
     def main(self, test_function: FunctionType):
         open(self.outfile, "w").close()
+        
         print("----------------Running Debug----------------")
         sys.settrace(self.trace_calls)
         test_function()
 
         self.closing()
-        self.write_record()
+        save_json_report(self.record, self.outfile)
 
     def trace_calls(self, frame, event, arg):
-        if getframeinfo(frame).function == self.function_name:
+        frameinfo = getframeinfo(frame)
+        if frameinfo.function == self.function_name:
+            self.record["header"] = {
+                "File" : os.path.basename(frameinfo.filename),
+                "Function" : frameinfo.function,
+                "Initial Line" : frame.f_lineno,
+                "start_time" : self.start_time
+            }
+            self.record["body"] = defaultdict(list)
             call_print(frame)
             self.lineno = frame.f_lineno
             self.startline = frame.f_lineno
@@ -63,20 +80,32 @@ class Debugger:
             print(f"On line {self.lineno}:")
         # print(getframeinfo(frame))
         start_of_line = time()
+
         for varName, varvalue in frame.f_locals.items():
+            flag = True
             if self.vars[varName]:
                 if not self.vars[varName] == varvalue:
                     self.on_var_change(varName, self.vars[varName], varvalue)
-                    self.record[varName].append((getframeinfo(frame).function, self.lineno, varvalue))
+                else:
+                    flag = False
             else:
-                print_var_init( varName, varvalue)
-                self.record[varName].append((getframeinfo(frame).function, self.lineno, varvalue))
+                print_var_init(varName, varvalue)
+                
+            if flag:
+                self.record["body"][self.step].append({
+                        "name" : varName,
+                        "timestamp" : time(),
+                        "function" : getframeinfo(frame).function,
+                        "lineno" : self.lineno,
+                        "value" : varvalue
+                        })
             self.vars[varName] = frame.f_locals[varName]
         self.lineno = frame.f_lineno
         self.line_times.append(time() - start_of_line)
         if not start:
             print("\tProcessing this line took: {:.4f} seconds".format(time() - start_of_line))
             print("\tExecution to this line has taken: {:.4f} seconds".format(time() - self.start_time))
+        self.step += 1 # Increment step
     
     def on_var_change(self, varName : str, old, new):
         CollectionTypes = list, dict, set, tuple
@@ -117,35 +146,36 @@ class Debugger:
         print("\nProcessing each line took an average of {:.4f} seconds".format(sum(self.line_times) / len(self.line_times)))
         print("\n----------------Finished Debug----------------")
         print("See the execution history and the report in the report.log!")
+    
 
-    def write_record(self):
-        for varName, info in self.record.items():
-            self.write_to_file(f"For the variable \'{varName}\'", heading=True)
-            init = info[0]
-
-            initialtype = type(init[2])
-            self.write_to_file(f"Type: {initialtype.__name__}")
-            self.write_to_file(f"Instantiated in function \'{init[0]}\' on line {init[1]}")
-            values = []
-
-            if isinstance(init[2], Collection):
-                self.write_to_file("Values:")
-            for detail in info:
-                # print(initialtype)
-                if not type(detail[2]) == initialtype:
-                    self.write_to_file(f" - Initial Value: {values[0]}, Final Value: {values[-1]}\n")
-                    self.write_to_file(f"On line {detail[1]} in function \'{detail[0]}\': Change in type from {initialtype.__name__} to {type(detail[2]).__name__}")
-                    self.write_to_file(f"\tCurrent Type: {type(detail[2]).__name__}")
-                    values.clear()
-                initialtype = type(detail[2])
-                values.append(detail[2])
-                if initialtype is str:
-                    self.write_to_file(f" - On line {detail[1]} in function \'{detail[0]}\', {detail[2]}")
-            if initialtype is int:
-                self.write_to_file(f" - Min: {min(values)}, Max: {max(values)}")
-            self.write_to_file(f" - Initial Value: {values[0]}, Final Value: {values[-1]}")
-        self.write_to_file("Total Execution Time: {:.4f} seconds".format(time() - self.start_time))
-
+    def print_record(self):
+        print(f"------------Reading From {self.json_report}------------")
+        print(f"""
+        File: {self.record["header"]["File"]}
+        Function : {self.record["header"]["Function"]}
+        Starts on Line : {self.record["header"]["Initial Line"]}
+        """)
+        initialTime = self.record["header"]["start_time"]
+        for step, info in self.record["body"].items():
+            print("On line {}:".format(
+                info[0]["lineno"]
+            ))
+            for change in info:
+                if change["name"] in self.vars:
+                    print("\t\'{}\' changes from {} to {}".format(
+                        change["name"], self.vars[change["name"]], change["value"]
+                    ))
+                else:
+                    print("\t\'{}\' is initialized to {}".format(
+                        change["name"], change["value"]
+                    ))
+                    self.vars[change["name"]] = change["value"]
+            if step != "1":
+                # print(self.record["body"][str(int(step) - 1)])
+                self.line_times.append(change["timestamp"] - self.record["body"][str(int(step) - 1)][0]["timestamp"])
+                print("\tProcessing this line took {:.4f} seconds".format(change["timestamp"] - self.record["body"][str(int(step) - 1)][0]["timestamp"]))
+            print("\tExecution to this line took {:.4f} seconds".format(change["timestamp"] - initialTime))
+        print("\nProcessing each line took an average of {:.4f} seconds".format(sum(self.line_times) / len(self.line_times)))
 
 # If this file is called directly from the commandline
 if __name__ == "__main__":
@@ -153,5 +183,21 @@ if __name__ == "__main__":
     if argc > 1:
         if "--help" in sys.argv or "-h" in sys.argv:
             helper()
+        else:
+            # Assume first string is to call this file
+            for index, arg in enumerate(sys.argv):
+                if arg == "debug.py":
+                    continue
+                if "py" in arg:
+                    # importlib.util.
+                    spec = importlib.util.spec_from_file_location("pydebug", arg) # Assume in the same python package
+                    test = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(test)
+                    if hasattr(test, "main"):
+                        Debugger(test.main)
+                    else:
+                        Debugger(getattr(test, "test"))
+                elif "json" in arg:
+                    Debugger(json_report = arg)
     else:
-        Debugger(testfunc)
+        Debugger(main)

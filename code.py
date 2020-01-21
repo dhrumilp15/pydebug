@@ -1,5 +1,5 @@
 #!/usr/bin/env python3    
-def testfunc():
+def main():
     var = 18
 
     var += 37
@@ -10,7 +10,7 @@ def testfunc():
 
     sample += "hinis"
 
-    sample = 3
+    sample = 3; var += 45
 
     # yellow = ["Mellow"]
 

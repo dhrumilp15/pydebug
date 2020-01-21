@@ -39,10 +39,17 @@ def helper():
         -----------------------------------------
         Welcome to Dhrumil's Epic Python Debugger!
 
-        Please add your code to the "code.py" file for testing!
+        Usage:
+        
+        To debug a python file:
+            
+            python debug.py [optional_python_file_to_test] [optional_method_to_test]
+        
+        To view the generated report:
+        
+            python debug.py [name of json]
 
-        Usage: python debug.py
 
-        This also writes a sparser representation of the debug to output.log for persistent storage!
+        This also writes a sparser representation of the debug to report.json for persistent storage!
         -----------------------------------------
     ''')
