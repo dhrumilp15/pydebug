@@ -15,7 +15,7 @@ from jsonhandler import *
 
 class Debugger:
     """
-    Main Debugger Class, drives debugging and traces calls and lines
+    Main Debugger Class, sets up for either reporting or analyzing
     """
     
     def __init__(self, test_function: FunctionType = None, json_report = None):
@@ -47,7 +47,11 @@ class Debugger:
 
 
     def main(self, test_function: FunctionType):
-        open(self.outfile, "w").close()
+        """
+        Main Debugger Activity, drives debugging and traces calls and lines
+        """
+
+        open(self.outfile, "w").close() # Empty the report
         
         print("----------------Running Debug----------------")
         sys.settrace(self.trace_calls)

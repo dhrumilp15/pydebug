@@ -40,16 +40,15 @@ def helper():
         Welcome to Dhrumil's Epic Python Debugger!
 
         Usage:
-        
-        To debug a python file:
             
-            python debug.py [optional_python_file_to_test] [optional_method_to_test]
-        
-        To view the generated report:
-        
-            python debug.py [name of json]
+            To debug a python file:
+                
+                python debug.py [optional_python_file_to_test] [optional_method_to_test]
+            
+            To view the generated report:
+            
+                python debug.py [name of json]
 
-
-        This also writes a sparser representation of the debug to report.json for persistent storage!
+        This also writes a report to report.json for persistent storage!
         -----------------------------------------
     ''')
