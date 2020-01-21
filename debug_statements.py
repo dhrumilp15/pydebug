@@ -44,6 +44,8 @@ def helper():
             To debug a python file:
                 
                 python debug.py [optional_python_file_to_test] [optional_method_to_test]
+
+                If the optional method  or main method to test doesn't exist, the "test" method will be debugged
             
             To view the generated report:
             
