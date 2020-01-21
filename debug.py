@@ -197,10 +197,14 @@ if __name__ == "__main__":
                     spec = importlib.util.spec_from_file_location("pydebug", arg) # Assume in the same python package
                     test = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(test)
-                    if hasattr(test, "main"):
-                        Debugger(test.main)
+                    if sys.argv[index + 1]:
+                        if hasattr(test, sys.argv[index + 1]):
+                            Debugger(getattr(test, sys.argv[index + 1]))
                     else:
-                        Debugger(getattr(test, "test"))
+                        if hasattr(test, "main"):
+                            Debugger(test.main)
+                        else:
+                            Debugger(getattr(test, "test"))
                 elif "json" in arg:
                     Debugger(json_report = arg)
     else:
