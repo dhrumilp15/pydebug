@@ -1,6 +1,7 @@
-#!usr/bin/env python3
+# !usr/bin/env python3
 from code import *
 from debug_statements import *
+from jsonhandler import *
 
 import os
 import sys
@@ -10,8 +11,7 @@ from types import *
 from collections.abc import *
 from time import time
 import importlib.util
-from jsonhandler import *
-
+import argparse
 
 class Debugger:
     """
@@ -183,29 +183,25 @@ class Debugger:
 
 # If this file is called directly from the commandline
 if __name__ == "__main__":
-    argc = len(sys.argv)
-    if argc > 1:
-        if "--help" in sys.argv or "-h" in sys.argv:
-            helper()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("py_file", nargs='?', type=str, help="python file to debug", default=None)
+    parser.add_argument("function", nargs='?', type=str, help="function to debug", default=None)
+    parser.add_argument("json_file", nargs='?', type=str, help="report save location", default="report.json")
+    args = parser.parse_args()
+    if args.py_file:
+        spec = importlib.util.spec_from_file_location("pydebug", args.py_file) # Assume in the same python package
+        test = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(test)
+        found = False
+        if args.function:
+            if hasattr(test, args.function):
+                Debugger(getattr(test, args.function))
+                found = True
         else:
-            # Assume first string is to call this file
-            for index, arg in enumerate(sys.argv):
-                if arg == "debug.py":
-                    continue
-                if "py" in arg:
-                    # importlib.util.
-                    spec = importlib.util.spec_from_file_location("pydebug", arg) # Assume in the same python package
-                    test = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(test)
-                    if sys.argv[index + 1]:
-                        if hasattr(test, sys.argv[index + 1]):
-                            Debugger(getattr(test, sys.argv[index + 1]))
-                    else:
-                        if hasattr(test, "main"):
-                            Debugger(test.main)
-                        else:
-                            Debugger(getattr(test, "test"))
-                elif "json" in arg:
-                    Debugger(json_report = arg)
+            if hasattr(test, "main"):
+                Debugger(test.main)
+                found = True
+        if not found:
+            Debugger(getattr(test, "test"))
     else:
         Debugger(main)
